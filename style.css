@@ -1,0 +1,302 @@
+body {
+    font-family: 'Courier New', monospace;
+    height: 100%;
+    margin: 0;
+}
+
+
+/* Room 0 */
+
+#mainroom {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: transform 2s;
+}
+
+.wrapper {
+  cursor: cell;
+  position: absolute;
+  top: 46%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes wipehv{
+  0% {transform: scale(0, 0.25);}
+  50% {transform: scale(1, 0.25); color: black;}
+  100% {transform: scale(1, 1); color: white;}
+}
+
+#greeting {
+  color: black;
+  font-size: 50px;
+  background-color: black;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  border-radius: 25px;
+  animation: wipehv 1.25s forwards;
+  display: grid;
+  place-items: center;
+}
+
+@keyframes slidedown {
+  50% {transform: translate(0, 0); color: white;}
+  100% {transform: translate(0, 2.5em); color: black;}
+}
+
+#name {
+  position: relative;
+  color: white;
+  font-size: 25px;
+  animation: slidedown 1.25s forwards;
+}
+
+
+/* Room 1 */
+
+#aboutme_room {
+  position: fixed;
+  bottom: 100%;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  transition: transform 2s;
+}
+
+#aboutme_header {
+  color: gray;
+  font-size: 25px;
+  opacity: 0;
+}
+
+@keyframes slideup {
+  0% {transform: translate(0, 0); opacity: 0;}
+  100% {transform: translate(0, -1em); opacity: 1;}
+}
+
+.aboutme_header_animation {
+  animation: slideup 0.75s forwards;
+}
+
+#aboutme_size_wrapper {
+  position: relative;
+  color: white;
+  font-size: 15px;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  display: grid;
+  place-items: center;
+}
+
+@keyframes wipevh{
+  0% {width: 1rem; height: 1rem;}
+  30% {width: 1rem; height: 100%;}
+  100% {width: 100%; height: 100%;}
+}
+
+.aboutme_content_animation {
+  animation: wipevh 1.25s forwards;
+}
+
+#aboutme_content {
+  position: absolute;
+  box-sizing: border-box;
+  background-color: gray;
+  border-radius: 15px;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  width: 1rem;
+  height: 1rem;
+  overflow: hidden;
+}
+
+/* Room 4 */
+
+#tomato {
+  position: fixed;
+  right: 100%;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  transition: transform 2s;
+}
+
+/* Edges */
+
+.edge {
+  position: fixed;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.edge:not(.stop_hover):hover > .border {
+  opacity: 1;
+}
+
+.edge.stop_hover {
+  cursor: default;
+}
+
+#top_edge {
+  left: 0;
+  top: 37%;
+  width: 100%;
+  height: 7rem;
+}
+
+#right_edge {
+  right: 41%;
+  top: 0;
+  height: 100%;
+  width: 7rem;
+}
+
+#bottom_edge {
+  left: 0;
+  bottom: 41%;
+  width: 100%;
+  height: 7rem;
+}
+
+#left_edge {
+  left: 41%;
+  top: 0;
+  height: 100%;
+  width: 7rem;
+}
+
+.border {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 1s;
+  z-index: 0;
+}
+
+#north {
+  background-image: linear-gradient(#dedede, white);
+}
+
+#east {
+  background-image: linear-gradient(to left, #dedede, white);
+}
+
+#south {
+  background-image: linear-gradient(to top, #dedede, white);
+}
+
+#west {
+  background-image: linear-gradient(to right, #dedede, white);
+}
+
+.arrow {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  color: #636363;
+  font-family: serif;
+  font-size: 40px;
+  display: grid;
+  place-items: center;
+  z-index: 1;
+}
+
+#up_arrow {
+  transform: translate(0.075em, -1rem);
+  writing-mode: vertical-rl;
+}
+
+#right_arrow {
+  transform: translate(1rem, -0.8em);
+}
+
+#down_arrow {
+  transform: translate(0.25em, 1rem);
+  writing-mode: vertical-rl;
+}
+
+#left_arrow {
+  transform: translate(-1rem, -0.8em);
+}
+
+.disabler {
+  transition: opacity 0.35s;
+}
+
+.disable {
+  pointer-events: none;
+  opacity: 0;
+}
+
+.disable_opaque {
+  pointer-events: none;
+}
+
+
+/* Arrow Animations */
+
+@keyframes shoot_up {
+  25% {opacity: 1; top: 37%}
+  100% {opacity: 1; top: 0rem;}
+}
+
+.animate_up {
+  animation: shoot_up 2s forwards;
+}
+
+@keyframes shoot_right {
+  25% {opacity: 1; right: 41%}
+  100% {opacity: 1; right: 0rem;}
+}
+
+.animate_right {
+  animation: shoot_right 2s forwards;
+}
+
+@keyframes shoot_down {
+  25% {opacity: 1; bottom: 41%}
+  100% {opacity: 1; bottom: 0rem;}
+}
+
+.animate_down {
+  animation: shoot_down 2s forwards;
+}
+
+@keyframes shoot_left {
+  25% {opacity: 1; left: 41%}
+  100% {opacity: 1; left: 0rem;}
+}
+
+.animate_left {
+  animation: shoot_left 2s forwards;
+}
+
+
+/* Room Transitions */
+
+.exit_bottom, .enter_top {
+  transform: translate(0, 100%);
+}
+
+.exit_left, .enter_right {
+  transform: translate(-100%, 0);
+}
+
+.exit_top, .enter_bottom {
+  transform: translate(0, -100%);
+}
+
+.exit_right, .enter_left {
+  transform: translate(100%, 0);
+}
