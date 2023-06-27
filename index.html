@@ -1,83 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #000000; /* Black background color */
-    }
-
-    header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 80px;
-      background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black header */
-      transition: background-color 0.5s; /* Transition effect for the background color */
-      z-index: 999; /* Ensure the header is on top of other elements */
-    }
-
-    header.transparent {
-      background-color: rgba(0, 0, 0, 0); /* Transparent header */
-    }
-
-    /* Add some content for demonstration */
-    section {
-      height: 1500px;
-      padding-top: 80px; /* Ensure content is below the fixed header */
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      font-size: 24px;
-      line-height: 1.5;
-    }
-
-    .random-text {
-      width: 50%;
-      text-align: left;
-      padding: 0 20px;
-    }
-
-    .random-text h2 {
-      font-size: 36px;
-      margin-bottom: 20px;
-    }
-
-    .random-text p {
-      font-size: 18px;
-    }
-  </style>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <header>
-    <!-- Add your header content here -->
+    <div class="left-content">
+      <span>*</span>
+    </div>
+    <div class="right-content">
+      Contact
+    </div>
   </header>
 
   <section>
     <div class="random-text">
-      <h2>Random Text</h2>
+      <h2>Bruce Qu</h2>
+
     </div>
-    <div class="random-text">
-      <p>Hi! I am Bruce Qu. An electrical engineering student at UCLA.</p>
+    <div class="paragraph">
+      <p>Hi, My name is Bruce Qu</p>
     </div>
   </section>
-
-  <script>
-    // JavaScript to handle the scrolling event and add/remove the "transparent" class
-    window.addEventListener("scroll", function() {
-      var header = document.querySelector("header");
-      var scrollPosition = window.scrollY;
-
-      if (scrollPosition > 0) {
-        header.classList.add("transparent");
-      } else {
-        header.classList.remove("transparent");
-      }
-    });
-  </script>
 </body>
 </html>
