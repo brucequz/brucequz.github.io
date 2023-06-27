@@ -41,14 +41,14 @@ header .right-content {
 }
 
 section {
-  margin-top: 80px; /* Ensure content is below the fixed header */
+  margin-top: 20px; /* Ensure content is below the fixed header */
   color: #ffffff;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   padding: 0 20px;
   font-size: 20px;
-  font-family: "Lato";
+  font-family: "Epilogue";
 }
 
 .name {
@@ -56,13 +56,13 @@ section {
   text-align: left;
   padding-right: 20px;
   font-size: 50px;
+  margin-left: 40px;
 }
 
 .name h2 {
-  font-size: 50px;
+  font-size: 80px;
   margin-top: 200px;
   margin-bottom: 10px;
-  margin-left: 100px;
 }
 
 .name p {
@@ -70,28 +70,45 @@ section {
   line-height: 1.5;
 }
 
+.contact-icons {
+  margin-top: 5px;
+}
+
+.contact-icons a {
+  margin-right: 10px;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 24px;
+}
+
+.contact-icons a:hover {
+  color: #1097eb;
+}
+
+
 .paragraph {
   width: 50%;
   text-align: left;
+  margin-top: 190px;
+  margin-left: 0px;
 }
 
 .paragraph h2 {
-  font-size: 24px;
+  font-size: 25px;
   margin-bottom: 10px;
 }
 
 .paragraph p {
-  font-size: 14px;
+  font-size: 20px;
   line-height: 1.5;
-  margin-top: 150px;
-  margin-left: 100px;
+
 }
 
 .projects h2 {
-  font-size: 50px;
-  margin-top: 200px;
+  font-size: 30px;
+  margin-top: 100px;
   margin-bottom: 10px;
-  margin-left: 100px;
+  margin-left: 40px;
 }
 
 .container {
@@ -106,13 +123,13 @@ section {
 }
 
 .image-wrapper {
-  width: 400px; /* Adjust the width and height as needed */
-  height: 400px;
+  width: 550px; /* Adjust the width and height as needed */
+  height: 550px;
   border-radius: 10px; /* Controls the roundness of the corners */
   overflow: hidden; /* Clips the image to the container */
   position: relative;
-  margin-right: 120px; /* Adjust the spacing between the images */
-  margin-left: 100px;
+  margin-right: 20px; /* Adjust the spacing between the images */
+  margin-left: 35px;
 }
 
 .image-wrapper img {
@@ -126,4 +143,21 @@ section {
   transform: scale(1.1); /* Applies a scale transform on hover */
 }
 
+.image-text {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  margin-bottom: 10px;
+  font-weight: bold;
+  z-index: 1;
+}
 
+.image-text-black {
+  color: #000000;
+}
+
+.image-text-white {
+  color: #ffffff;
+}
