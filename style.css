@@ -249,7 +249,7 @@ section {
   font-size: 16px;
 }
 
-
+/* about page */
 .about-me {
   width: 50%;
   text-align: justify;
@@ -264,4 +264,65 @@ section {
   width: 500px; /* Adjust the width as needed */
   height: auto;
   margin-bottom: 20px;
+}
+
+/* blog page */
+
+blog {
+  margin-top: 80px; /* Ensure content is below the fixed header */
+  color: #ffffff;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 0 20px;
+  font-size: 20px;
+  font-family: "Epilogue";
+}
+
+.post-container {
+  display: flex;
+  justify-content: center; /* Horizontally center the content */
+  align-items: center; /* Vertically center the content */
+  flex-direction: column;
+}
+
+.post {
+  display: flex;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.post img {
+  width: 220px;
+  margin-right: 20px;
+  border-radius: 10px; /* Controls the roundness of the corners */
+  position: relative;
+  visibility: visible;
+}
+
+.post img::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100px; /* Adjust the height of the reflection */
+  transform: scaleY(-1); /* Flip the reflection vertically */
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.4), transparent); /* Defines the gradient for the reflection */
+  pointer-events: none; /* Ensures the reflection doesn't interfere with clicks */
+}
+
+.post-content {
+  flex: 1;
+  color: #ffffff;
+}
+
+.post-title {
+  margin-top: 10px;
+  font-size: 25px;
+}
+
+.post-description {
+  margin-top: 10px;
+  font-size: 16px;
 }
