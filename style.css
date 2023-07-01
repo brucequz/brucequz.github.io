@@ -279,7 +279,7 @@ blog {
   font-family: "Epilogue";
 }
 
-.post-container {
+.post-entry {
   display: flex;
   justify-content: center; /* Horizontally center the content */
   align-items: center; /* Vertically center the content */
@@ -290,39 +290,47 @@ blog {
   display: flex;
   margin-top: 20px;
   margin-bottom: 20px;
+  background-color: #b6b4b4;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 .post img {
   width: 220px;
   margin-right: 20px;
-  border-radius: 10px; /* Controls the roundness of the corners */
-  position: relative;
-  visibility: visible;
-}
-
-.post img::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100px; /* Adjust the height of the reflection */
-  transform: scaleY(-1); /* Flip the reflection vertically */
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.4), transparent); /* Defines the gradient for the reflection */
-  pointer-events: none; /* Ensures the reflection doesn't interfere with clicks */
+  border-radius: 10px;
+  object-fit: cover;
+  display: block;
 }
 
 .post-content {
   flex: 1;
-  color: #ffffff;
+  padding: 0px;
+  max-width: 450px;
 }
 
 .post-title {
+  font-size: 20px;
   margin-top: 10px;
-  font-size: 25px;
+  margin-bottom: 10px;
+  color: #000000;
+}
+
+.post-footer {
+  font-size: 12px;
+  color:rgb(28, 28, 28)
 }
 
 .post-description {
-  margin-top: 10px;
-  font-size: 16px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #333333;
+  max-width: 400px;
 }
+
+.post:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+

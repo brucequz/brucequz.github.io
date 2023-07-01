@@ -1,0 +1,449 @@
+<html><head><style>body {
+   color: black;
+}
+</style></head><body><h1 id="using-manim-to-create-animations-programmatically">Using Manim to Create Animations Programmatically</h1>
+<p><strong>Austin Liu</strong></p>
+<p><strong>Updated by Christian Ko and Bruce Qu</strong></p>
+<p>Have you ever watched a youtube video about math with cool animations and
+wondered how on earth it was made? If your answer is yes, there&#39;s a good chance
+that video was by 3blue1brown. 3blue1brown is a youtube channel created by Grant
+Sanderson designed to teach mathematics with a focus on conceptual understanding
+through animations. </p>
+<p>If creating these animations through code intrigues you, then you&#39;re in the right place! In this article, we&#39;ll be
+looking at Manim, a python animation library that we can use to make animations
+like the following using only code.</p>
+<div align="center">
+
+<img src="images/blog/manim/3b1b-example.gif" alt="3b1b Signal Decomposition">
+
+<a href="https://youtu.be/spUNpyF58BY?t=131">3b1b Signal Decomposition</a>
+
+</div>
+
+<p>By the end of this article, you will have learned the building blocks that you
+need to be able to build fancy animations like this on your own. Without further
+ado, let&#39;s get to it!</p>
+<h2 id="why-use-manim-">Why Use Manim?</h2>
+<p>If you&#39;ve ever created animations before using GUI based animation software like
+Adobe After Effects, you may be wondering why we should use Manim in the first
+place. Can&#39;t we make the same animations using GUI programs?</p>
+<p>Manim isn&#39;t a one size fits all solution for animation. There are some types of
+animations that are simply better suited to be made in different ways. Where
+Manim (and other programmatic animation software) shines is when your animations
+can benefit from <strong>leveraging the programming constructs</strong> we know and love,
+<strong>like variables, control flow, and especially loops</strong>.</p>
+<p>This makes Manim a great tool for <strong>educational animations</strong>, which benefit
+greatly from programmatic calculations for making plots and explaining things
+sequentially using loops.</p>
+<!-- ## Versions of Manim -->
+<!-- Before we dive in, it's worth it to briefly mention that there are essentially -->
+<!-- three different versions of Manim: -->
+<!---->
+<!-- 1. ManimCairo -->
+<!-- 2. ManimGL -->
+<!-- 3. Manim/ManimCE -->
+<!---->
+<!-- The reason for this goes back to the history of Manim and 3blue1brown, but it's -->
+<!-- not too important for us to know to get started with making our own animations, -->
+<!-- so I'm going to skip it. Just know that for this article, **we will be using -->
+<!-- Manim/ManimCE**. If you are interested in learning about the differences between -->
+<!-- each version, see [this -->
+<!-- link](https://docs.manim.community/en/stable/faq/installation.html#:~:text=Manim%2C%20or%20ManimCE%20refers%20to,by%20Grant%20%E2%80%9C3b1b%E2%80%9D%20Sanderson.). -->
+<h2 id="getting-started">Getting Started</h2>
+<!-- First things first, here is the -->
+<!-- [documentation](https://docs.manim.community/en/stable/reference.html) for -->
+<!-- Manim. If you have any questions or want more in-depth explanations as you -->
+<!-- folllow along, this is the place to go! Thankfully the Manim documentation is -->
+<!-- very thorough, so be assured that you won't be left in the dark. -->
+<h3 id="installation">Installation</h3>
+<!-- Before we can start writing our animation code, you're going to need to install -->
+<!-- Manim by following the instructions -->
+<!-- [here](https://docs.manim.community/en/stable/installation.html). -->
+<!---->
+<!-- If you have knowledge of `conda`, I recommend going that route, as it takes -->
+<!-- care of the dependencies for you and doesn't clutter up your system's -->
+<!-- workspace. If you haven't worked with `conda` and don't want to bother learning -->
+<!-- about it right now, just install Manim and its dependencies locally to your -->
+<!-- system's python to your system's python. Either way, just follow the -->
+<!-- instructions per the link above and you'll be good to go! -->
+<p>To install Manim, follow the instructions
+<a href="https://docs.manim.community/en/stable/installation.html">here</a>. I would
+recommend using <code>conda</code> if you have experience with it.</p>
+<h3 id="boilerplate">Boilerplate</h3>
+<p>With Manim installed, we can start making our first animation. To begin, create
+a new python file in your editor of choice and type this in:</p>
+<pre><code class="lang-python"><span class="hljs-keyword">from</span> manim <span class="hljs-keyword">import</span> *
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyScene</span><span class="hljs-params">(Scene)</span>:</span>
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">construct</span><span class="hljs-params">(self)</span>:</span>
+        <span class="hljs-comment"># animation code</span>
+</code></pre>
+<p>Every animation you create with Manim is going to start with this. Let&#39;s break
+it down:</p>
+<ol>
+<li><p><code>from manim import *</code></p>
+ <!-- - First we import everything from Manim. This gives us a bunch of prebuilt -->
+ <!--   classes, functions, and convenience variables (e.g. `RED`, `UP`, -->
+ <!--   etc.) -->
+</li>
+<li><p><code>class Animation(Scene):</code></p>
+<ul>
+<li>Every Manim animation is a class that inherits from <code>Scene</code>, which we
+imported from Manim&#39;s python library. You can name this class anything you
+want.</li>
+<li>When we build our video file later using the Manim program, we will need
+to specify which classname in this file we are going to use to make the
+animation</li>
+<li>Since we&#39;re only starting with Manim, we&#39;ll only be needing one of these
+classes, but if you we&#39;re to compose, say, a video with several different
+<em>&quot;Scenes&quot;</em> (hence the superclass name), you could organize each one to be in it&#39;s own class</li>
+</ul>
+</li>
+<li><p><code>def construct(self):</code></p>
+<ul>
+<li><code>construct</code> is a special method that Manim will use to &quot;construct&quot; the
+animation</li>
+<li>This is where our animation code will go</li>
+</ul>
+</li>
+</ol>
+<h2 id="building-blocks-mobject">Building blocks - MObject</h2>
+<h3 id="adding-mobjects-to-our-scene">Adding MObjects to Our Scene</h3>
+<p>MObjects (<strong>M</strong>anim <strong>Object</strong>s) are essentially the lego pieces of a Manim
+animation. They are the things that are displayed on the screen.</p>
+<p>Manim&#39;s python library comes with a bunch of MObjects predefined. You can
+reference the full list
+<a href="https://docs.manim.community/en/stable/reference.html#mobjects">here</a>.</p>
+<p>Each of these MObjects is a python class, so you create it just like you would
+any other object in python.</p>
+<p>Let&#39;s add a circle to our scene:</p>
+<pre><code class="lang-python"><span class="hljs-title">from</span> manim <span class="hljs-keyword">import</span> *
+<span class="hljs-class">
+<span class="hljs-keyword">class</span> <span class="hljs-type">MyScene</span>(<span class="hljs-type">Scene</span>):
+    def construct(<span class="hljs-title">self</span>):
+        circle = <span class="hljs-type">Circle</span>(<span class="hljs-title">color</span>=<span class="hljs-type">RED</span>, <span class="hljs-title">fill_opacity</span>=0.5)
+        self.add(<span class="hljs-title">circle</span>)</span>
+</code></pre>
+<p>Here we instantiate a <code>Circle</code> MObject into the variable <code>circle</code>. We then need
+to tell Manim to display that circle, which we do with the <code>add()</code> method that
+comes with the <code>Scene</code> class.</p>
+<p>MObjects have a wide array of <a href="https://docs.manim.community/en/stable/reference/manim.mobject.mobject.Mobject.html#">methods</a> that can be used to manipulate its features.</p>
+<p>Some methods which will probably be most likely used are:</p>
+<p><code>arrange</code>, which is used to sort MObjects next to each other.</p>
+<p><code>flip</code>, which flips an MObject about its center.</p>
+<p><code>move_to</code>, which moves the center of an MObject to the specified coordinates.</p>
+<p><code>next_to</code>, which moves an MObject next to another MObject.</p>
+<p><code>rotate</code>, which rotates an MObject about a specified point.</p>
+<p><code>scale</code>, which increases or decreases the MObject&#39;s size by a specified factor.</p>
+<h3 id="rendering-our-scene">Rendering Our Scene</h3>
+<p>To actually create a media file using what we wrote, we need to feed our python
+file into the <code>manim</code> program. To do so, we type this into the command line:</p>
+<pre><code class="lang-bash">manim -qm -p <span class="hljs-tag">&lt;<span class="hljs-name">python_file</span>&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">scene_classname</span>&gt;</span>
+</code></pre>
+<ul>
+<li><strong>-q</strong> - quality of the output file<ul>
+<li><strong>m</strong> - medium</li>
+</ul>
+</li>
+<li><strong>-p</strong> - preview the output after processing</li>
+</ul>
+<h3 id="animating-mobjects">Animating MObjects</h3>
+<p>Simple animations are done using the <code>Scene.play</code> method. The list of available
+animations is located
+<a href="https://docs.manim.community/en/stable/reference.html#animations">here</a>.</p>
+<p>There are four primary things that can be animated:</p>
+<ol>
+<li>Creating MObjects</li>
+<li>Transforming MObjects</li>
+<li>Emphasizing MObjects</li>
+<li>Destroying MObjects</li>
+</ol>
+<h4 id="animating-creation">Animating Creation</h4>
+<p>Instead of simply using <code>Scene.add()</code> to add our circle to the Scene like we did
+previously, we can animate it in.</p>
+<pre><code class="lang-python"><span class="hljs-title">from</span> manim <span class="hljs-keyword">import</span> *
+<span class="hljs-class">
+<span class="hljs-keyword">class</span> <span class="hljs-type">MyScene</span>(<span class="hljs-type">Scene</span>):
+    def construct(<span class="hljs-title">self</span>):
+        circle = <span class="hljs-type">Circle</span>(<span class="hljs-title">color</span>=<span class="hljs-type">RED</span>, <span class="hljs-title">fill_opacity</span>=0.5)
+        self.play(<span class="hljs-type">Create(circle)</span>)</span>
+</code></pre>
+<p>This results in the circle being drawn in:</p>
+<div align="center">
+
+<img src="images/blog/manim/creation.gif" alt="Circle Creation Animation">
+
+<em>Circle Creation Animation</em>
+
+</div>
+
+<h4 id="animating-transformations">Animating Transformations</h4>
+<p>We can animate a transformation from one MObject to another. For instance, we
+can <code>Transform</code> our newly added red circle into a green square.</p>
+<pre><code class="lang-python"><span class="hljs-title">from</span> manim <span class="hljs-keyword">import</span> *
+<span class="hljs-class">
+<span class="hljs-keyword">class</span> <span class="hljs-type">MyScene</span>(<span class="hljs-type">Scene</span>):
+    def construct(<span class="hljs-title">self</span>):
+        circle = <span class="hljs-type">Circle</span>(<span class="hljs-title">color</span>=<span class="hljs-type">RED</span>, <span class="hljs-title">fill_opacity</span>=0.5)
+        self.add(<span class="hljs-title">circle</span>)
+        square = <span class="hljs-type">Square</span>(<span class="hljs-title">color</span>=<span class="hljs-type">GREEN</span>, <span class="hljs-title">fill_opacity</span>=0.75)
+        self.play(<span class="hljs-type">Transform</span>(<span class="hljs-title">circle</span>, <span class="hljs-title">square</span>))</span>
+</code></pre>
+<p>The result of this is:</p>
+<div align="center">
+
+<img src="images/blog/manim/transformation.gif" alt="Circle to Square Transformation">
+
+<em>Circle to Square Transformation</em>
+
+</div>
+
+
+<h4 id="animating-emphasis">Animating Emphasis</h4>
+<p>To bring attention to a specific MObject, we can animate an emphasis. There are
+several different emphasis animations that Manim has built in. One such is
+<code>Wiggle</code>.</p>
+<pre><code class="lang-python"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-type">MyScene</span>(<span class="hljs-type">Scene</span>):
+    def construct(<span class="hljs-title">self</span>):
+        circle = <span class="hljs-type">Circle</span>(<span class="hljs-title">color</span>=<span class="hljs-type">RED</span>, <span class="hljs-title">fill_opacity</span>=0.5)
+        self.add(<span class="hljs-title">circle</span>)
+        square = <span class="hljs-type">Square</span>(<span class="hljs-title">color</span>=<span class="hljs-type">GREEN</span>, <span class="hljs-title">fill_opacity</span>=0.75)
+        self.play(<span class="hljs-type">ReplacementTransform</span>(<span class="hljs-title">circle</span>, <span class="hljs-title">square</span>))
+        self.play(<span class="hljs-type">Wiggle(square)</span>)</span>
+</code></pre>
+<p>This results in:</p>
+<div align="center">
+
+<img src="images/blog/manim/emphasis.gif" alt="Square Wiggle Emphasis">
+
+<em>Square Wiggle Emphasis</em>
+
+</div>
+
+
+<h4 id="animating-destruction">Animating Destruction</h4>
+<p>Lastly, when we want to remove MObjects from the screen, we can do so using
+animations like <code>FadeOut</code>.</p>
+<pre><code class="lang-python"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-type">MyScene</span>(<span class="hljs-type">Scene</span>):
+    def construct(<span class="hljs-title">self</span>):
+        circle = <span class="hljs-type">Circle</span>(<span class="hljs-title">color</span>=<span class="hljs-type">RED</span>, <span class="hljs-title">fill_opacity</span>=0.5)
+        self.add(<span class="hljs-title">circle</span>)
+        square = <span class="hljs-type">Square</span>(<span class="hljs-title">color</span>=<span class="hljs-type">GREEN</span>, <span class="hljs-title">fill_opacity</span>=0.75)
+        self.play(<span class="hljs-type">ReplacementTransform</span>(<span class="hljs-title">circle</span>, <span class="hljs-title">square</span>))
+        self.play(<span class="hljs-type">Wiggle(square)</span>)
+        self.play(<span class="hljs-type">FadeOut(square)</span>)</span>
+</code></pre>
+<p>This fades out the square as expected:</p>
+<div align="center">
+
+<img src="images/blog/manim/destruction.gif" alt="Square Fade Out">
+
+<em>Square Fade Out</em>
+
+</div>
+
+<h3 id="condensing-animation-code">Condensing Animation Code</h3>
+<p>If you want to create an animation that only requires using an MObject&#39;s base methods, and not any dedicated Animation class function,
+then you can condense multiple <code>self.play()</code> lines into one using <code>animate</code>.</p>
+<p>For example, the following two code blocks are identical in function.</p>
+<pre><code class="lang-Python"><span class="hljs-title">from</span> manim <span class="hljs-keyword">import</span> *
+<span class="hljs-class">
+<span class="hljs-keyword">class</span> <span class="hljs-type">AnimateExample</span>(<span class="hljs-type">Scene</span>):
+    def construct(<span class="hljs-title">self</span>):
+        circle = <span class="hljs-type">Circle</span>()
+        self.play(<span class="hljs-type">Create(circle)</span>)
+        self.play(<span class="hljs-title">circle</span>.<span class="hljs-title">animate</span>.<span class="hljs-title">shift</span>(<span class="hljs-type">LEFT</span>))
+        self.play(<span class="hljs-title">circle</span>.<span class="hljs-title">animate</span>.<span class="hljs-title">scale</span>(2))
+        self.play(<span class="hljs-title">circle</span>.<span class="hljs-title">animate</span>.<span class="hljs-title">rotate</span>(<span class="hljs-type">PI</span> / 2))
+        self.play(<span class="hljs-type">Uncreate(circle)</span>)</span>
+</code></pre>
+<pre><code class="lang-Python"><span class="hljs-title">from</span> manim <span class="hljs-keyword">import</span> *
+<span class="hljs-class">
+<span class="hljs-keyword">class</span> <span class="hljs-type">AnimateCombinedExample</span>(<span class="hljs-type">Scene</span>):
+    def construct(<span class="hljs-title">self</span>):
+        circle = <span class="hljs-type">Circle</span>()
+        self.play(<span class="hljs-type">Create(circle)</span>)
+        self.play(<span class="hljs-title">circle</span>.<span class="hljs-title">animate</span>.<span class="hljs-title">shift</span>(<span class="hljs-type">LEFT</span>).scale(2).rotate(<span class="hljs-type">PI</span> / 2))
+        self.play(<span class="hljs-type">Uncreate(circle)</span>)</span>
+</code></pre>
+<p>Additionally, <code>Uncreate</code> can be used to animate destruction rather than a <code>FadeOut</code> transform. <code>Uncreate</code> is simply <code>Create</code>, but in reverse.</p>
+<h3 id="grouping-objects">Grouping Objects</h3>
+<p>MObjects can be grouped together in order to do things like animate dots on a graph moving together.
+Groups can be formed with <code>VGroup</code>, and any MObjects that are passed within that function will be added to the group defined.</p>
+<pre><code class="lang-Python"><span class="hljs-title">from</span> manim <span class="hljs-keyword">import</span> *
+<span class="hljs-class">
+<span class="hljs-keyword">class</span> <span class="hljs-type">GroupExample</span>(<span class="hljs-type">Scene</span>):
+    def construct(<span class="hljs-title">self</span>):
+        red_circle = <span class="hljs-type">Circle</span>(<span class="hljs-title">color</span> = <span class="hljs-type">RED</span>)
+        green_circle = <span class="hljs-type">Circle</span>(<span class="hljs-title">color</span> = <span class="hljs-type">GREEN</span>)
+        blue_circle = <span class="hljs-type">Circle</span>(<span class="hljs-title">color</span> = <span class="hljs-type">BLUE</span>)
+
+        red_circle.shift(<span class="hljs-type">LEFT</span>)
+        blue_circle.shift(<span class="hljs-type">RIGHT</span>)
+
+        group1 = <span class="hljs-type">VGroup</span>(<span class="hljs-title">red_circle</span>, <span class="hljs-title">green_circle</span>)
+        group2 = <span class="hljs-type">VGroup</span>(<span class="hljs-title">green_circle</span>, <span class="hljs-title">blue_circle</span>)
+        self.add(<span class="hljs-title">group1</span>, <span class="hljs-title">group2</span>)
+        self.play(<span class="hljs-type">Create(red_circle)</span>)
+        self.play(<span class="hljs-type">Create(green_circle)</span>)
+        self.play(<span class="hljs-type">Create(blue_circle)</span>)
+        self.play((<span class="hljs-title">group1</span> + <span class="hljs-title">group2</span>).animate.shift(<span class="hljs-type">LEFT</span>).scale(2))
+        self.play(<span class="hljs-title">group2</span>.<span class="hljs-title">animate</span>.<span class="hljs-title">rotate</span>(<span class="hljs-type">PI</span> / 2))
+        self.play(<span class="hljs-type">Uncreate(red_circle)</span>)
+        self.play(<span class="hljs-type">Uncreate(green_circle)</span>)
+        self.play(<span class="hljs-type">Uncreate(blue_circle)</span>)</span>
+</code></pre>
+<p>In this example, three RGB circles are made with two groups formed from them. First they are created, then they all move left and grow by a factor of 2 because both groups were specified to move in the code. Then the green and blue circles are rotated 90 degrees because only <code>group2</code> was specified to rotate.</p>
+<p>By utilizing groups, animating many MObjects will hopefully not be as daunting of a task.</p>
+<h2 id="building-blocks-text-and-equations">Building blocks - Text and Equations</h2>
+<h3 id="displaying-text">Displaying Text</h3>
+<p>Displaying text is pretty straightforward:</p>
+<pre><code class="lang-Python">from manim import *
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TextExample</span>(<span class="hljs-title">Scene</span>):</span>
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">construct</span><span class="hljs-params">(<span class="hljs-keyword">self</span>)</span></span>:
+        line1 = Text(<span class="hljs-string">"You can use Manim"</span>)
+        line2 = Text(<span class="hljs-string">"to create animations like these"</span>)
+        line3 = Text(<span class="hljs-string">"Cool, right?"</span>)
+
+        line2.next_to(line1, DOWN)
+
+        <span class="hljs-keyword">self</span>.play(Write(line1))
+        <span class="hljs-keyword">self</span>.wait(<span class="hljs-number">1</span>)
+        <span class="hljs-keyword">self</span>.play(Write(line2))
+        <span class="hljs-keyword">self</span>.wait(<span class="hljs-number">1</span>)
+        <span class="hljs-keyword">self</span>.play(FadeOut(line1), FadeOut(line2))
+        <span class="hljs-keyword">self</span>.wait(<span class="hljs-number">1</span>)
+        <span class="hljs-keyword">self</span>.play(Write(line3))
+</code></pre>
+<p>Like the <code>Circle</code> object, we first create a <code>Text</code> object, then pass on the text that should be created. The <code>Text</code> object has additional
+parameters that can be passed on, like <code>font</code>, <code>font_size</code>, <code>color</code>, and such.</p>
+<h3 id="displaying-mathematical-equations">Displaying Mathematical Equations</h3>
+<p>Math equations and formulas go hand-in-hand in application with educational animations. However, it is incredibly difficult to read math equations written in
+normal text! This is where <a href="https://www.latex-project.org/">LaTeX</a> comes in handy. LaTeX is a typesetting software system widely used in academia. It allows users to produce math equations that look good while still being intuitive. There are many tutorials on the internet regarding LaTeX if needed, whether
+you are new or need a refresher.</p>
+<!---
+comment: add student wiki about LaTeX here!
+-->
+<p>After installing a LaTeX distribution like <a href="https://pypi.org/project/PyLaTeX/">PyLaTeX</a>, you will use a <code>Tex</code> object rather than a <code>Text</code> object.</p>
+<p>Now you can create math equations and add them to your Manim animations!</p>
+<pre><code class="lang-Python">equation = Text(<span class="hljs-string">r"$E(z,t) = \hat{x}cos(2\pi \times 10^{6}t - 7z + \frac{\pi}{2})$"</span>)
+</code></pre>
+<p>While LaTeX is capable of producing matrices and tables, Manim actually has built-in <code>Matrix</code> and <code>Table</code> MObjects, but if you prefer to use LaTeX,  <code>MathTable</code> is a specialized MObject for use with LaTex.</p>
+<h2 id="building-blocks-scene">Building blocks - Scene</h2>
+<h3 id="moving-camera-scene">Moving Camera Scene</h3>
+<p>Now we know how to create objects, including text and equations, with Manim, animate the objects, and render the scene with Python. To create camera movement in our video, we can simply inherit from the class <code>MovingCameraScene</code> instead of <code>Scene</code>.</p>
+<p>As our &quot;hello world&quot; project in moving camera scene, we are going to create an animation that zoom in and out.</p>
+<pre><code class="lang-python"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ChangingCameraWidthAndRestore</span>(<span class="hljs-title">MovingCameraScene</span>):</span>
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">construct</span><span class="hljs-params">(<span class="hljs-keyword">self</span>)</span></span>:
+        text = Text(<span class="hljs-string">"Hello World"</span>).set_color(BLUE)
+        <span class="hljs-keyword">self</span>.add(text)
+        <span class="hljs-keyword">self</span>.camera.frame.save_state()
+        <span class="hljs-keyword">self</span>.play(<span class="hljs-keyword">self</span>.camera.frame.animate.set(width=text.width * <span class="hljs-number">1.2</span>))
+        <span class="hljs-keyword">self</span>.wait(<span class="hljs-number">0</span>.<span class="hljs-number">3</span>)
+        <span class="hljs-keyword">self</span>.play(Restore(<span class="hljs-keyword">self</span>.camera.frame))
+</code></pre>
+<p>This piece of code remembers the initial camera frame by calling the <code>save_state()</code> function. After we zoom in with <code>self.play(self.camera.frame.animate.set(width=text.width * 1.2))</code>, we then restore the original camera frame by calling the <code>Restore()</code> function as shown above.</p>
+<div align="center">
+
+<img src="images/blog/manim/hello_world.gif" alt="Change and Restore">
+
+<em>Change and Restore</em>
+
+</div>
+
+<p>We can also move the camera center to emphasize different objects on the same canvas or create a gallery swipping effect.</p>
+<p>Here are the steps to create that effect:</p>
+<ol>
+<li>Create a square and a triangle. Make sure they are next to each other.</li>
+<li>Add both shapes to <code>self</code></li>
+<li>Use <code>self.play</code> to move the camera around. Make sure to pause between movements.</li>
+</ol>
+<pre><code class="lang-python"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-type">MovingCameraCenter</span>(<span class="hljs-type">MovingCameraScene</span>):
+    def construct(<span class="hljs-title">self</span>):
+        s = <span class="hljs-type">Square</span>(<span class="hljs-title">color</span>=<span class="hljs-type">RED</span>, <span class="hljs-title">fill_opacity</span>=0.5).move_to(2 * <span class="hljs-type">LEFT</span>)
+        t = <span class="hljs-type">Triangle</span>(<span class="hljs-title">color</span>=<span class="hljs-type">GREEN</span>, <span class="hljs-title">fill_opacity</span>=0.5).move_to(2 * <span class="hljs-type">RIGHT</span>)
+        self.wait(0.3)
+        self.add(<span class="hljs-title">s</span>, <span class="hljs-title">t</span>)
+        self.play(<span class="hljs-title">self</span>.<span class="hljs-title">camera</span>.<span class="hljs-title">frame</span>.<span class="hljs-title">animate</span>.<span class="hljs-title">move_to</span>(<span class="hljs-title">s</span>))
+        self.wait(0.3)
+        self.play(<span class="hljs-title">self</span>.<span class="hljs-title">camera</span>.<span class="hljs-title">frame</span>.<span class="hljs-title">animate</span>.<span class="hljs-title">move_to</span>(<span class="hljs-title">t</span>))</span>
+</code></pre>
+<div align="center">
+
+<img src="images/blog/manim/move_center.gif" alt="Simple Camera movement">
+
+<em>Simple Camera movement</em>
+
+</div>
+
+<p>Ta-da! We have created a basic moving camera scene! However, to spice it up a little more, we can combine the above two effects, zoom in/out and moving camera!</p>
+<p>Again, we are going to create two shapes, a square and a triangle. First, we zoom in and move the camera to the squares. Then we shift the camera to the triangle. Lastly, we zoom out to display both shapes.</p>
+<p>Here is the code to produce that effect.</p>
+<pre><code class="lang-python"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-type">MovingAndZoomingCamera</span>(<span class="hljs-type">MovingCameraScene</span>):
+    def construct(<span class="hljs-title">self</span>):
+        s = <span class="hljs-type">Square</span>(<span class="hljs-title">color</span>=<span class="hljs-type">BLUE</span>, <span class="hljs-title">fill_opacity</span>=0.5).move_to(2 * <span class="hljs-type">LEFT</span>)
+        t = <span class="hljs-type">Triangle</span>(<span class="hljs-title">color</span>=<span class="hljs-type">YELLOW</span>, <span class="hljs-title">fill_opacity</span>=0.5).move_to(2 * <span class="hljs-type">RIGHT</span>)
+        self.add(<span class="hljs-title">s</span>, <span class="hljs-title">t</span>)
+        self.play(<span class="hljs-title">self</span>.<span class="hljs-title">camera</span>.<span class="hljs-title">frame</span>.<span class="hljs-title">animate</span>.<span class="hljs-title">move_to</span>(<span class="hljs-title">s</span>).set(<span class="hljs-title">width</span>=<span class="hljs-title">s</span>.<span class="hljs-title">width</span>*2))
+        self.wait(0.3)
+        self.play(<span class="hljs-title">self</span>.<span class="hljs-title">camera</span>.<span class="hljs-title">frame</span>.<span class="hljs-title">animate</span>.<span class="hljs-title">move_to</span>(<span class="hljs-title">t</span>).set(<span class="hljs-title">width</span>=<span class="hljs-title">t</span>.<span class="hljs-title">width</span>*2))
+
+        self.play(<span class="hljs-title">self</span>.<span class="hljs-title">camera</span>.<span class="hljs-title">frame</span>.<span class="hljs-title">animate</span>.<span class="hljs-title">move_to</span>(<span class="hljs-type">ORIGIN</span>).set(<span class="hljs-title">width</span>=14))</span>
+</code></pre>
+<div align="center">
+
+<img src="images/blog/manim/move_zoom.gif" alt="Move and Zoom">
+
+<em>Move and Zoom</em>
+
+</div>
+
+
+<p>Now you might be asking, is this effect applicable to other shapes, or graphs? We have been working with squares, triangles, and circles, so wouldn&#39;t it be exciting to see those effects in the xy plane?</p>
+<p>First, we need to create an Axes with <code>ax = Axes(x_range=[-1,10], y_range=[-1,10])</code></p>
+<p>And then, we will need to plot a function on the x-y plane. In this example, we will plot a cosine function.  <code>graph = ax.plot(lambda x: np.cos(x), color=WHITE, x_range=[0, 3 * PI])</code></p>
+<p>We can even put dots on the graph to denote the start and the end. Additionally, these two points can be used to indicate the start and the end of our camera movement.</p>
+<pre><code class="lang-python">dot_1 = Dot(ax.i2gp(<span class="hljs-keyword">graph</span>.t_min, <span class="hljs-keyword">graph</span>))
+dot2 = Dot(ax.i2gp(<span class="hljs-keyword">graph</span>.t_max, <span class="hljs-keyword">graph</span>))
+self.add(ax, <span class="hljs-keyword">graph</span>, dot_1, dot_2)
+</code></pre>
+<p>Here is the complete code:</p>
+<pre><code class="lang-python"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-type">MovingCameraOnGraph</span>(<span class="hljs-type">MovingCameraScene</span>):
+    def construct(<span class="hljs-title">self</span>):
+        self.camera.frame.save_state()
+
+        ax = <span class="hljs-type">Axes</span>(<span class="hljs-title">x_range</span>=[-1, 10], <span class="hljs-title">y_range</span>=[-1, 10])
+        graph = ax.plot(<span class="hljs-title">lambda</span> <span class="hljs-title">x</span>: <span class="hljs-title">np</span>.<span class="hljs-title">cos</span>(<span class="hljs-title">x</span>), color=<span class="hljs-type">WHITE</span>, x_range=[0, 3 * <span class="hljs-type">PI</span>])
+
+        dot_1 = <span class="hljs-type">Dot</span>(<span class="hljs-title">ax</span>.<span class="hljs-title">i2gp</span>(<span class="hljs-title">graph</span>.<span class="hljs-title">t_min</span>, <span class="hljs-title">graph</span>))
+        dot_2 = <span class="hljs-type">Dot</span>(<span class="hljs-title">ax</span>.<span class="hljs-title">i2gp</span>(<span class="hljs-title">graph</span>.<span class="hljs-title">t_max</span>, <span class="hljs-title">graph</span>))
+        self.add(<span class="hljs-title">ax</span>, <span class="hljs-title">graph</span>, <span class="hljs-title">dot_1</span>, <span class="hljs-title">dot_2</span>)
+
+        self.play(<span class="hljs-title">self</span>.<span class="hljs-title">camera</span>.<span class="hljs-title">frame</span>.<span class="hljs-title">animate</span>.<span class="hljs-title">scale</span>(0.5).move_to(<span class="hljs-title">dot_1</span>))
+        self.play(<span class="hljs-title">self</span>.<span class="hljs-title">camera</span>.<span class="hljs-title">frame</span>.<span class="hljs-title">animate</span>.<span class="hljs-title">move_to</span>(<span class="hljs-title">dot_2</span>))
+        self.play(<span class="hljs-type">Restore</span>(<span class="hljs-title">self</span>.<span class="hljs-title">camera</span>.<span class="hljs-title">frame</span>))
+        self.wait()</span>
+</code></pre>
+<div align="center">
+
+<img src="images/blog/manim/move_coordinate.gif" alt="Movement in coordinate plane">
+
+<em>Movement in coordinate plane</em>
+
+</div>
+
+<h2 id="closing-remarks">Closing Remarks</h2>
+<p>With just these basics, you know enough to explore and create more useful animations using Manim.
+There are more concepts to Manim that will allow you to create more expressive animations, but with
+what we have learned, you would be able to create animations like the one shown in the introduction
+to this article.</p>
+<p>The Manim <a href="https://docs.manim.community/en/stable/reference.html">documention</a> is a great resource that is very thorough in its explanations, so be sure to
+check it out if you want a deeper dive.</p>
+<h2 id="sources">Sources</h2>
+<ol>
+<li><a href="https://docs.manim.community/en/stable/index.html#">https://docs.manim.community/en/stable/index.html#</a></li>
+<li><a href="https://github.com/ManimCommunity/manim">https://github.com/ManimCommunity/manim</a></li>
+<li><a href="https://github.com/3b1b">https://github.com/3b1b</a></li>
+</ol>
+</body></html>
